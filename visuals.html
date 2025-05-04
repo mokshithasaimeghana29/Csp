@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Visualizations of survey data on hospital preferences in Santhi Nagar, Nellore.">
+    <title>People's Hospital Preferences - Visuals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #e6f0ff, #d9e6ff);
+            overflow-x: hidden;
+        }
+
+        /* Header and Navbar */
+        header {
+            background: linear-gradient(90deg, #007bff, #005bb5);
+            color: #fff;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #00c4b4;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+
+        nav ul li a:hover::before, nav ul li a.active::before {
+            width: 70%;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: #00c4b4;
+            transform: translateY(-2px);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Visuals Section (God-Tier) */
+        .visuals {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            min-height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            animation: fadeIn 2.5s ease;
+            background: radial-gradient(circle at center, rgba(0, 123, 255, 0.2) 0%, transparent 75%);
+            overflow: hidden;
+        }
+
+        .visuals::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"%3E%3Cg opacity="0.15"%3E%3Cpath d="M150 50a100 100 0 0 1 100 100 100 100 0 0 1-100 100 100 100 0 0 1-100-100 100 100 0 0 1 100-100m0-20a120 120 0 0 0-120 120 120 120 0 0 0 120 120 120 120 0 0 0 120-120 120 120 0 0 0-120-120z" fill="none" stroke="%23007bff" stroke-width="8"/%3E%3Ccircle cx="150" cy="150" r="80" fill="none" stroke="%2300c4b4" stroke-width="6"/%3E%3C/g%3E%3C/svg%3E') center/200px repeat;
+            opacity: 0.25;
+            z-index: -1;
+            animation: ripple 12s infinite ease-in-out;
+        }
+
+        .visuals h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(45deg, #007bff, #00c4b4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 2.5rem;
+            position: relative;
+            text-align: center;
+            opacity: 0;
+            animation: slideInDown 1.4s ease forwards 0.4s;
+            filter: drop-shadow(0 4px 8px rgba(0, 123, 255, 0.5));
+        }
+
+        .visuals h1::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #007bff, #00c4b4);
+            margin: 0.6rem auto;
+            border-radius: 2px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .visuals:hover h1::after {
+            width: 300px;
+        }
+
+        .visuals-content {
+            max-width: 850px;
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(240, 244, 255, 0.95));
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 123, 255, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 123, 255, 0.2);
+            opacity: 0;
+            animation: zoomIn 1.2s ease forwards 0.7s;
+            transform: perspective(1500px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visuals-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 150%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-20deg);
+            animation: shine 8s infinite ease-in-out;
+        }
+
+        .visuals-content p {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 2.5rem;
+            line-height: 2;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1s;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #007bff, #00c4b4);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            opacity: 0;
+            animation: zoomIn 0.8s ease forwards;
+            animation-delay: calc(0.2s * var(--btn-index));
+        }
+
+        .btn:nth-child(1) { --btn-index: 1; }
+        .btn:nth-child(2) { --btn-index: 2; }
+        .btn:nth-child(3) { --btn-index: 3; }
+        .btn:nth-child(4) { --btn-index: 4; }
+        .btn:nth-child(5) { --btn-index: 5; }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 150%;
+        }
+
+        .btn:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn.active {
+            background: linear-gradient(45deg, #005bb5, #00a69b);
+            transform: scale(1.15);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            background: linear-gradient(90deg, #2a2a2a, #1a1a1a);
+            color: #fff;
+            animation: slideInUp 1.2s ease;
+        }
+
+        footer p {
+            font-size: 1rem;
+            letter-spacing: 1.2px;
+            font-weight: 300;
+        }
+
+        /* Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.6); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes ripple {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.25; }
+            50% { transform: scale(1.3) rotate(45deg); opacity: 0.4; }
+        }
+
+        @keyframes shine {
+            0% { left: -150%; }
+            50% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 1rem;
+            }
+
+            nav ul {
+                gap: 0.8rem;
+            }
+
+            nav ul li a {
+                font-size: 0.95rem;
+                padding: 0.5rem 0.8rem;
+            }
+
+            .visuals h1 {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+            }
+
+            .visuals-content {
+                padding: 2rem;
+            }
+
+            .visuals-content p {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .visuals h1 {
+                font-size: 1.8rem;
+            }
+
+            .visuals-content {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                gap: 0.8rem;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+        .visuals {
+    max-width: 1200px;
+    margin: 4rem auto; /* Centers horizontally with top/bottom margin */
+    padding: 0 2rem;
+    min-height: calc(100vh - 200px); /* Full height minus header/footer */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers vertically */
+    align-items: center; /* Centers horizontally */
+}
+
+.visuals-content {
+    max-width: 850px; /* Limits width for readability */
+    text-align: center; /* Centers text/buttons inside */
+    padding: 3rem;
+    margin: 0 auto; /* Centers horizontally within .visuals */
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px; /* Fixed width for chart */
+    height: 400px;
+    margin: 0 auto; /* Centers horizontally within .visuals-content */
+}
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="abstract.html">Abstract</a></li>
+                <li><a href="introduction.html">Introduction</a></li>
+                <li><a href="questionnaire.html">Questionnaire</a></li>
+                <li><a href="surveydata.html">Survey Data</a></li>
+                <li><a href="visuals.html" class="active">Visuals</a></li>
+                <li><a href="activity.html">Activity</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="conclusion.html">Conclusion</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="visuals">
+            <h1>Data Visualizations</h1>
+            <div class="visuals-content">
+                <p>Click the buttons below to explore insights from the hospital preferences survey.</p>
+                <div class="button-group">
+                    <button class="btn" onclick="showChart('pie')">Hospital Preference</button>
+                    <button class="btn" onclick="showChart('bar')">Quality Ratings</button>
+                    <button class="btn" onclick="showChart('horizontal-bar')">Top Reasons</button>
+                    <button class="btn" onclick="showChart('stacked-bar')">Preference vs Quality</button>
+                    <button class="btn" onclick="showChart('doughnut')">Preference Breakdown</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="visualizationChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Hospital Preferences Project. All rights reserved.</p>
+    </footer>
+    <script>
+        // Data for visualizations
+        const preferenceData = {
+            labels: ['Private', 'Government'],
+            datasets: [{
+                label: 'Hospital Preference',
+                data: [36, 14],
+                backgroundColor: ['#007bff', '#00c4b4'],
+                borderColor: ['#005bb5', '#00a69b'],
+                borderWidth: 1
+            }]
+        };
+
+        const qualityData = {
+            labels: ['Excellent', 'Good', 'Avg', 'Fair'],
+            datasets: [{
+                label: 'Quality Ratings',
+                data: [1, 33, 13, 3],
+                backgroundColor: '#007bff',
+                borderColor: '#005bb5',
+                borderWidth: 1
+            }]
+        };
+
+        const reasonData = {
+            labels: ['Quality of Treatment', 'Hospital Environment', 'Experience Doctors', 'Emergency Care', 'Budget Friendly'],
+            datasets: [{
+                label: 'Top Reasons',
+                data: [10, 8, 7, 4, 4],
+                backgroundColor: '#00c4b4',
+                borderColor: '#00a69b',
+                borderWidth: 1
+            }]
+        };
+
+        const stackedData = {
+            labels: ['Excellent', 'Good', 'Avg', 'Fair'],
+            datasets: [
+                {
+                    label: 'Private',
+                    data: [1, 24, 9, 2],
+                    backgroundColor: '#007bff',
+                    borderColor: '#005bb5',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Government',
+                    data: [0, 9, 4, 1],
+                    backgroundColor: '#00c4b4',
+                    borderColor: '#00a69b',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        let currentChart = null;
+
+        function showChart(chartType) {
+            const ctx = document.getElementById('visualizationChart').getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Update button active state
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick') === `showChart('${chartType}')`) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Render the selected chart
+            switch (chartType) {
+                case 'pie':
+                    currentChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: preferenceData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'top', labels: { font: { size: 14 } } },
+                                title: { display: true, text: 'Hospital Preference Distribution', font: { size: 18 } }
+                            }
+                        }
+                    });
+                    break;
+
+                case 'bar':
+                    currentChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: qualityData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: { display: true, text: 'Quality Ratings Distribution', font: { size: 18 } }
+                            },
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                    break;
+
+                case 'horizontal-bar':
+                    currentChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: reasonData,
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: { display: true, text: 'Top 5 Reasons for Preference', font: { size: 18 } }
+                            },
+                            scales: {
+                                x: { beginAtZero: true }
+                            }
+                        }
+                    });
+                    break;
+
+                case 'stacked-bar':
+                    currentChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: stackedData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'top', labels: { font: { size: 14 } } },
+                                title: { display: true, text: 'Preference vs Quality', font: { size: 18 } }
+                            },
+                            scales: {
+                                x: { stacked: true },
+                                y: { stacked: true, beginAtZero: true }
+                            }
+                        }
+                    });
+                    break;
+
+                case 'doughnut':
+                    currentChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: preferenceData,
+                        options: {
+                            responsive: true,
+                            cutout: '60%',
+                            plugins: {
+                                legend: { position: 'top', labels: { font: { size: 14 } } },
+                                title: { display: true, text: 'Preference Breakdown', font: { size: 18 } }
+                            }
+                        }
+                    });
+                    break;
+
+                default:
+                    console.error('Invalid chart type');
+            }
+        }
+
+        // Show the first chart by default
+        document.addEventListener('DOMContentLoaded', () => {
+            showChart('pie');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Activity Log</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  
+  <header>
+    <nav>
+        <!-- <div class="logo">Hospital Preferences</div> -->
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="abstract.html">Abstract</a></li>
+            <li><a href="introduction.html">Introduction</a></li>
+            <li><a href="questionnaire.html">Questionnaire</a></li>
+            <li><a href="surveydata.html">Survey Data</a></li>
+            <li><a href="visuals.html">Visuals</a></li>
+            <li><a href="activity.html">Activity</a></li>
+            <li><a href="conclusion.html">Conclusion</a></li>
+            <li><a href="team.html">Team</a></li>
+
+        </ul>
+    </nav>
+</header><header>
+    <h1>Weekly Activity Log</h1>
+  </header>
+<br><br>
+  <!-- Navigation Buttons -->
+  <nav>
+    <button onclick="showWeek(1)">Week 1</button>
+    <button onclick="showWeek(2)">Week 2</button>
+    <button onclick="showWeek(3)">Week 3</button>
+    <button onclick="showWeek(4)">Week 4</button>
+    <button onclick="showWeek(5)">Week 5</button>
+    <button onclick="showWeek(6)">Week 6</button>
+    <button onclick="showWeek(7)">Week 7</button>
+    <button onclick="showWeek(8)">Week 8</button>
+  </nav>
+
+  <!-- Weekly Activity Table -->
+  <div id="activity-container">
+    <table id="activity-table">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Activity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Content will be dynamically loaded here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
